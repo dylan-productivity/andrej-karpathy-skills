@@ -1,65 +1,49 @@
 # CLAUDE.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+## The Loop (mandatory — run this on every prompt)
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+From Andrej Karpathy: "LLMs are exceptionally good at looping until they meet
+specific goals... Don't tell it what to do, give it success criteria and watch it go."
 
-## 1. Think Before Coding
+Before doing anything else, on every prompt:
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+1. **Goal** — restate the request as 1-3 *verifiable* success criteria
+   (a test that passes, a command whose output matches, a file that exists with X).
+2. **Plan** — the smallest set of steps that could satisfy the criteria;
+   each step names its verify check.
+3. **Execute** — do one step, then verify it. Never batch unverified steps.
+4. **Loop** — criteria unmet → adjust and repeat. Criteria met → stop.
+   No extra polish passes, no unrequested work.
+5. **Report** — state the criteria and the evidence they're met. Nothing else.
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+If the success criteria can't be made verifiable, say so and ask — don't guess.
 
-## 2. Simplicity First
+## Token efficiency (every prompt)
 
-**Minimum code that solves the problem. Nothing speculative.**
+- Read only what the current step needs. Read sections, not whole files, when large.
+- Never re-read files already in context; never re-run commands whose output hasn't changed.
+- One precise search beats browsing. Grep before opening files.
+- Keep responses to the report format above — don't restate file contents back.
+- Delegate large scans/research to subagents so raw output stays out of the main context.
+- Keep CLAUDE.md files lean: they are loaded on *every* prompt. Detail belongs in
+  docs/ files read on demand.
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+## Principles (condensed)
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+1. **Think before coding** — surface assumptions, ambiguities, and simpler
+   alternatives before implementing. If unclear, stop and ask.
+2. **Simplicity first** — minimum code that meets the criteria. No speculative
+   features, abstractions, or error handling. If 200 lines could be 50, rewrite.
+3. **Surgical changes** — touch only what the request requires; match existing
+   style; clean up only orphans your own change created.
 
-## 3. Surgical Changes
+Full versions with examples: [skills/karpathy-guidelines/SKILL.md](skills/karpathy-guidelines/SKILL.md).
+Goal-driven execution is The Loop above.
 
-**Touch only what you must. Clean up only your own mess.**
+## Unified Brain · Notebook · Auto-Research
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
+This repo is the behavioral layer of a four-part system. Architecture, the
+auto-research loop, and the token-efficiency evidence base live in
+[unified-research/](unified-research/README.md) — read on demand, not per prompt.
 
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**Tradeoff:** these rules bias toward caution over speed. For trivial tasks, use judgment.
