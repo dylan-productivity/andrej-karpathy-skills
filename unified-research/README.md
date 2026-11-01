@@ -65,6 +65,9 @@ system uses: prompt/context caching, brain-first retrieval instead of context
 stuffing, compaction, lean always-loaded instructions, and routing work to
 cheaper paths.
 
+Platform review (prompting, plugins, mods, hooks):
+[reviews/claude-platform-2026-11.md](reviews/claude-platform-2026-11.md).
+
 ## Operating rules (summary)
 
 - The Karpathy Loop ([CLAUDE.md](../CLAUDE.md)) applies to every prompt in every

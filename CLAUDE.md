@@ -25,6 +25,8 @@ If the success criteria can't be made verifiable, say so and ask — don't guess
 - One precise search beats browsing. Grep before opening files.
 - Keep responses to the report format above — don't restate file contents back.
 - Delegate large scans/research to subagents so raw output stays out of the main context.
+- Set effort deliberately per task type and don't change it mid-session (it invalidates
+  the prompt cache); lowering effort beats "think less" prose.
 - Keep CLAUDE.md files lean: they are loaded on *every* prompt. Detail belongs in
   docs/ files read on demand.
 
